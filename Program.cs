@@ -3,9 +3,6 @@ using System.IO;
 
 class Program
 {
-
-    private List<DesktopEntry> desktop_entries;
-
     static int Main(){
         // Setup desktop file locations
         string? xdg_data_dirs = Environment.GetEnvironmentVariable("XDG_DATA_DIRS");
@@ -25,7 +22,7 @@ class Program
             Console.WriteLine(entry);
 
         // Loop over each desktop location
-        List<string> d_files = [];
+        List<DesktopEntry> desktop_entries = [];
 
         // Collect desktop files
         foreach(string l in desktop_locations){
@@ -34,13 +31,15 @@ class Program
                 IEnumerable<string> files = Directory.EnumerateFiles(l);
                 foreach(string f in files)
                     if (f.EndsWith(".desktop") || f.EndsWith(".directory"))
-                        d_files.AddRange(files);
+                    {
+                        desktop_entries.Add(new DesktopEntry(f, l));
+                    }
             }
         }
 
         // Print desktop files
-        foreach(string f in d_files)
-            Console.WriteLine(f);
+        // foreach(string f in d_files)
+        //     Console.WriteLine(f);
 
         return 0;
     }

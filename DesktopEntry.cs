@@ -5,21 +5,28 @@ enum DesktopType{
 }
 
 class DesktopEntry{
-    public string? name {get; private set;}
+    public string id {get; private set;}
+    public string name {get; private set;}
     public string? generic_name {get; private set;}
 
     public DesktopType type {get; private set;}
 
-    public DesktopEntry(string? _name, DesktopType _type, string? _generic_name = "") {
-        name = _name;
-        generic_name = _generic_name;
+    public DesktopEntry(string file_path, string path_base){
 
-        type = _type;
-    }
-
-    public DesktopEntry(string file_name){
+        if (!file_path.StartsWith(path_base))
+            throw new ArgumentException();
+        id = file_path.Remove(0,path_base.Length).Replace('/', '-');
+        Console.WriteLine(id);
         // TODO: parse file
 
+
+
         type = DesktopType.Application;
+        name = "";
+    }
+
+    public string toString()
+    {
+        return id;
     }
 }
