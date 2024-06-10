@@ -3,13 +3,27 @@ using System.IO;
 
 class Program
 {
-    private static readonly string[] desktop_locations = ["/usr/share/applications/",
-                                                   "/usr/local/share/applications/",
-                                                   "~/.local/share/applications/"];
 
     private List<DesktopEntry> desktop_entries;
 
     static int Main(){
+        // Setup desktop file locations
+        string? xdg_data_dirs = Environment.GetEnvironmentVariable("XDG_DATA_DIRS");
+        string[] desktop_locations = [];
+        if (xdg_data_dirs != null)
+        {
+            desktop_locations = xdg_data_dirs.Split(':').Select(d => d +
+                                                                 (d.EndsWith('/') ? "" : "/") +
+                                                                 "applications/").ToArray();
+        }
+        else {
+            desktop_locations = ["/usr/share/applications/",
+                                 "/usr/local/share/applications/"];
+        }
+
+        foreach(string entry in desktop_locations)
+            Console.WriteLine(entry);
+
         // Loop over each desktop location
         List<string> d_files = [];
 
