@@ -3,37 +3,44 @@ using System.IO;
 
 class Program
 {
+    static string[] GetDesktopDirectories(){
+        string? xdg_data_dirs = Environment.GetEnvironmentVariable("XDG_DATA_DIRS");
+        if (xdg_data_dirs != null)
+            return xdg_data_dirs.Split(':').Select(d => d + (d.EndsWith('/') ? "" : "/") + "applications/").ToArray();
+        else
+            return ["/usr/share/applications/", "/usr/local/share/applications/"];
+    }
+
     static int Main(){
         // Setup desktop file locations
-        string? xdg_data_dirs = Environment.GetEnvironmentVariable("XDG_DATA_DIRS");
-        string[] desktop_locations = [];
-        if (xdg_data_dirs != null)
-        {
-            desktop_locations = xdg_data_dirs.Split(':').Select(d => d +
-                                                                 (d.EndsWith('/') ? "" : "/") +
-                                                                 "applications/").ToArray();
-        }
-        else {
-            desktop_locations = ["/usr/share/applications/",
-                                 "/usr/local/share/applications/"];
-        }
-
-        foreach(string entry in desktop_locations)
-            Console.WriteLine(entry);
+        string[] desktop_locations = GetDesktopDirectories();
 
         // Loop over each desktop location
-        List<DesktopEntry> desktop_entries = [];
+        HashSet<DesktopEntry> desktop_entries = [];
 
         // Collect desktop files
+        Queue<string> dirs_to_search = [];
         foreach(string l in desktop_locations){
-            if (Directory.Exists(l))
+            dirs_to_search.Enqueue(l);
+            while(dirs_to_search.Count != 0)
             {
-                IEnumerable<string> files = Directory.EnumerateFiles(l);
-                foreach(string f in files)
-                    if (f.EndsWith(".desktop") || f.EndsWith(".directory"))
-                    {
-                        desktop_entries.Add(new DesktopEntry(f, l));
+                string cur = dirs_to_search.Dequeue();
+                if (Directory.Exists(cur))
+                {
+                    // Add all subdirectories to be searched
+                    string[] dirs = Directory.GetDirectories(cur);
+                    foreach(string d in dirs)
+                        dirs_to_search.Enqueue(d);
+
+                    // Find all desktop files
+                    IEnumerable<string> files = Directory.EnumerateFiles(cur);
+                    foreach(string f in files){
+                        if (f.EndsWith(".desktop") || f.EndsWith(".directory"))
+                        {
+                            desktop_entries.Add(new DesktopEntry(f, l));
+                        }
                     }
+                }
             }
         }
 
