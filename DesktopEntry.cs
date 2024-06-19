@@ -38,7 +38,7 @@ class DesktopEntry{
     public bool     dbus_activactable       {get; private set;} = false;
     public string?  path                    {get; private set;}
     public bool     terminal                {get; private set;} = false;
-    public string? url                      {get; private set;}
+    public string?  url                     {get; private set;}
 
     // Helper functions:
     private static bool ParseBoolean(string s){
@@ -124,7 +124,7 @@ class DesktopEntry{
                                 break;
 
                             case "Icon":
-                                icon = kv.Value; 
+                                icon = kv.Value;
                                 break;
 
                             case "Hidden":
@@ -154,7 +154,7 @@ class DesktopEntry{
                             case "Path":
                                 path = kv.Value;
                                 break;
-                            
+
                             case "Terminal":
                                 terminal = ParseBoolean(kv.Value);
                                 break;
@@ -162,7 +162,7 @@ class DesktopEntry{
                             case "Actions":
                                 // TODO: implement this
                                 break;
-                            
+
                             case "MimeType":
                                 mime_type = ParseStrList(kv.Value);
                                 break;
@@ -178,7 +178,7 @@ class DesktopEntry{
                             case "StartupNotify":
                                 startup_notify = ParseBoolean(kv.Value);
                                 break;
-                            
+
                             case "StartupWMClass":
                                 startup_wm_class = kv.Value;
                                 break;
@@ -190,7 +190,7 @@ class DesktopEntry{
                             case "PrefersNonDefaultGPU":
                                 prefers_non_default_gpu = ParseBoolean(kv.Value);
                                 break;
-                            
+
                             case "SingleMainWindow":
                                 single_main_window = ParseBoolean(kv.Value);
                                 break;
@@ -212,5 +212,58 @@ class DesktopEntry{
     public override string ToString()
     {
         return id;
+    }
+
+    public void Print(){
+        Console.WriteLine("DesktopEntry: " + name + " - " + id);
+
+        Console.WriteLine("  Type: " +                        type);
+        Console.WriteLine();
+
+        Console.WriteLine("  Exec: " +                      exec);
+        if (try_exec != null)
+            Console.WriteLine("  Try exec: " +                  try_exec);
+        if(terminal)
+            Console.WriteLine("  Terminal: " +                  terminal);
+        if (path != null)
+            Console.WriteLine("  Path: " +                      path);
+        Console.WriteLine();
+
+        if(generic_name != null)
+            Console.WriteLine("  Generic name: " +              generic_name);
+        if (comment != null)
+            Console.WriteLine("  Comment: " +                   comment);
+        if (icon != null)
+            Console.WriteLine("  Icon: " +                      icon);
+        if (categories.Length > 0)
+            Console.WriteLine("  Categories: "  +               string.Join(", ", categories));
+        if (keywords.Length > 0)
+            Console.WriteLine("  Keywords: " +                  string.Join(", ", keywords));
+        if (mime_type.Length > 0)
+            Console.WriteLine("  Mime types: " +                string.Join(", ", mime_type));
+        Console.WriteLine();
+
+        if (no_display)
+            Console.WriteLine("  Display: " +                   !no_display);
+        if (hidden)
+            Console.WriteLine("  Hidden: " +                    hidden);
+        if (only_show_in.Length > 0)
+            Console.WriteLine("  Only show in: " +              string.Join(", ", only_show_in));
+        if (not_show_in.Length > 0)
+            Console.WriteLine("  Not show in: " +               string.Join(", ", not_show_in));
+        Console.WriteLine();
+
+        if (dbus_activactable)
+            Console.WriteLine("  Dbus activatable?: " +         dbus_activactable);
+        if (type == DesktopType.Directory)
+            Console.WriteLine("  URL: " + url);
+
+        // Console.WriteLine("  Startup notify: " +            startup_notify);
+        // Console.WriteLine("  Startup WM class: " +          startup_wm_class);
+        // Console.WriteLine("  Prefers non-default GPU: " +   prefers_non_default_gpu);
+        // Console.WriteLine("  Single main window: " +        single_main_window);
+
+        // Console.WriteLine("Actions: " + actions);
+        // Console.WriteLine("Implements: " + implements);
     }
 }

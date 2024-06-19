@@ -45,8 +45,10 @@ class Program
         }
 
         // Print desktop files
-        foreach(DesktopEntry e in desktop_entries)
-            Console.WriteLine(e);
+        // foreach(DesktopEntry e in desktop_entries)
+        //     Console.WriteLine(e);
+
+        desktop_entries.First().Print();
 
         return 0;
     }
