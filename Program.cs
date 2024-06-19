@@ -45,8 +45,8 @@ class Program
         }
 
         // Print desktop files
-        // foreach(string f in d_files)
-        //     Console.WriteLine(f);
+        foreach(DesktopEntry e in desktop_entries)
+            Console.WriteLine(e);
 
         return 0;
     }
