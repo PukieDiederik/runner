@@ -1,5 +1,7 @@
 ﻿using System;
 using System.IO;
+using System.Net.Sockets;
+using Tmds.DBus;
 
 class Program
 {
@@ -11,7 +13,7 @@ class Program
             return ["/usr/share/applications/", "/usr/local/share/applications/"];
     }
 
-    static int Main(){
+    static async Task Main(){
         // Setup desktop file locations
         string[] desktop_locations = GetDesktopDirectories();
 
@@ -50,6 +52,22 @@ class Program
 
         desktop_entries.First().Print();
 
-        return 0;
+        // Setup DBusServer
+
+        Connection c = new Connection(Address.Session);
+        await c.ConnectAsync();
+        var dbs = new DBusServer();
+        await c.RegisterObjectAsync(dbs);
+        await c.RegisterServiceAsync("com.pukie.runner");
+
+        // await c.RegisterObjectAsync(s);
+        // try{
+        //     await c.RegisterServiceAsync("com.pukie.runner", ServiceRegistrationOptions.None);
+        // }
+        // catch {
+        //     Console.WriteLine("Error Occured");
+        // }
+        // Console.WriteLine("Fine here");
+        await Task.Delay(-1);
     }
 }
