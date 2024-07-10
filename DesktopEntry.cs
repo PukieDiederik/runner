@@ -1,6 +1,6 @@
 using System;
 
-enum DesktopType{
+public enum DesktopType{
     Application,
     Link,
     Directory,
@@ -8,7 +8,7 @@ enum DesktopType{
 
 
 
-class DesktopEntry{
+public class DesktopEntry{
     public string id {get; private set;}
 
     // keys
